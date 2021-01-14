@@ -1,2 +1,15 @@
 # getKraken
-A full stack python application that allows users to join groups of season ticket holders assigns members to a ticket draft to receive tickets to specific games out of the season.
+Given a group of sports fans all go in to buy season tickets to the Seattle Krakens, Get Kraken provides a fair way to allow individual members of that group to select which games they will get tickets to.
+
+getKraken offers a fullstack python application with React front end and a docker/django back and middle stacks.
+
+## Team Members
+
+Paul Leonard
+
+Mark Bell
+
+Will Ulrich Motchoffo
+
+Yonatan Palagashvili
+
