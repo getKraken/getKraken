@@ -33,3 +33,8 @@ https://trello.com/b/NCh6FI86/game-selection
 - [x] EVENTS
 
 ![database-entity-relationship-diagram](assets/db_entity_relationship.png)
+
+
+## Sources
+- [to CASCADE or RESTRICT](
+https://docs.djangoproject.com/en/3.1/ref/models/fields/#django.db.models.ForeignKey)
