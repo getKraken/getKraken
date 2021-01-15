@@ -10,19 +10,21 @@ class User(CustomUser):
 
 class Series(models.Model):
   title = models.CharField(max_length=64)
+  organizer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    # TODO: Add an owner of the series
 
   def __str__(self):
-    return self.title
+    return f"The Series {self.title} is organized by {self.organizer}."
 
 class Event(models.Model):
   description = models.CharField(max_length=64)
   # TODO: unsure about the SET_NULL, could possibly use RESTRICT
   series = models.ForeignKey('Series', on_delete=models.CASCADE)
   # TODO = 
-  owner = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
+  host = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
 
   def __str__(self):
-    return f"The event {self.description} is a part of the {self.series} and has been claimed by {self.owner}"
+    return f"The event {self.description} is a part of the {self.series} and has been claimed by {self.host}"
 
 class Subscription(models.Model):
 
