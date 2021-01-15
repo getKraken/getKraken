@@ -150,7 +150,8 @@ INTERNAL_IPS = ['127.0.0.1']
 # CUSTOM USER MODEL CONFIGS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/topics/auth/customizing/#substituting-a-custom-user-model
-AUTH_USER_MODEL = 'accounts.CustomUser'
+# TODO: Delete this line if all works:  AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'api.User'
 
 # DJANGO-ALLAUTH CONFIGS
 # ------------------------------------------------------------------------------
@@ -164,7 +165,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
-)
+    )
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
