@@ -1,19 +1,21 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .serializers import UserSerializer, SeriesSerializer, EventSerializer, SubscriptionSerializer
 from .models import User, Series, Event, Subscription
-# TODO: from .permissions import ??? isAuthorOrReadOnly ??? and then add stuff to particular views
+from .permissions import IsSelfUser
+from rest_framework.permissions import IsAdminUser
 
 # Naming convention: (Single)OBJECT(List) + CRUD-options + View
 
 class UserListCreateView(ListCreateAPIView):
+  permission_classes = (IsAdminUser, IsSelfUser)
   serializer_class = UserSerializer
   queryset = User.objects.all()
-
-# TODO: User RUD
 
 class UserRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+  permission_classes = (IsAdminUser, IsSelfUser)
   serializer_class = UserSerializer
   queryset = User.objects.all()
+
 
 class SeriesListCreateView(ListCreateAPIView):
   serializer_class = SeriesSerializer
