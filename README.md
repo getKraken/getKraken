@@ -13,8 +13,23 @@ Will Ulrich Motchoffo
 
 Yonatan Palagashvili
 
+## WireFrames
+![login-page](assets/signup_login_wireframe.png)
+![homepage](assets/user_homepage_wireframe.png)
+![series-page](assets/specific_series_wireframe.png)
+![events-page](assets/events_wireframe.png)
+
 ## User Stories
 
 https://trello.com/b/NCh6FI86/game-selection
 
+## Domain Model
 
+4 datatables used:
+
+- [x] USERS
+- [x] USER-to-SERIES LOOKUP 
+- [x] SERIES 
+- [x] EVENTS
+
+![database-entity-relationship-diagram](assets/db_entity_relationship.png)
