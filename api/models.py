@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from accounts.models import CustomUser
 
 class User(CustomUser):
-  username = models.CharField(max_length=64)
+  # username = models.CharField(max_length=64)
 
   def __str__(self):
     return self.username
