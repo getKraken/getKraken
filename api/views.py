@@ -1,17 +1,19 @@
-from rest_framework.generics import ListCreateAPIView,CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .serializers import UserSerializer, SeriesSerializer, EventSerializer, SubscriptionSerializer
 from .models import User, Series, Event, Subscription
 # TODO: from .permissions import ??? isAuthorOrReadOnly ??? and then add stuff to particular views
 
 # Naming convention: (Single)OBJECT(List) + CRUD-options + View
 
-class UserCreateView(CreateAPIView):
+class UserListCreateView(ListCreateAPIView):
   serializer_class = UserSerializer
   queryset = User.objects.all()
 
 # TODO: User RUD
 
-
+class UserRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+  serializer_class = UserSerializer
+  queryset = User.objects.all()
 
 class SeriesListCreateView(ListCreateAPIView):
   serializer_class = SeriesSerializer

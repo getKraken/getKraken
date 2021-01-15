@@ -9,12 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
 class SeriesSerializer(serializers.ModelSerializer):
   class Meta:
     model = Series
-    fields = 'id','title' 
+    fields = 'id','title','organizer' 
 
 class EventSerializer(serializers.ModelSerializer):
   class Meta:
     model = Event
-    fields = 'id','series','description','owner' 
+    fields = 'id','series','description','host' 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
   class Meta:
