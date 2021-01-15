@@ -13,3 +13,8 @@ Will Ulrich Motchoffo
 
 Yonatan Palagashvili
 
+## User Stories
+
+https://trello.com/b/NCh6FI86/game-selection
+
+
