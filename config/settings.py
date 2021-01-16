@@ -1,4 +1,8 @@
 from pathlib import Path
+# Configure environment variables
+import environ
+env = environ.Env(DEBUG=(bool,False))
+environ.Env.read_env()
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -84,11 +88,11 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': env(str('DATABASE_NAME')),
+        'USER': env(str('DATABASE_USER')),
+        'PASSWORD': env(str('DATABASE_PASSWORD')),
+        'HOST': env(str('DATABASE_HOST')),
+        'PORT': env(str('DATABASE_PORT')),
     }
 }
 
