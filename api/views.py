@@ -29,23 +29,32 @@ class SeriesMixin:
       return Series.objects.all()
     # give logged-in users the ability to see what they are an organizer or particpant of
     if not isinstance(user, AnonymousUser):
-      return Series.objects.filter(organizer=user, organizer__username=user)
+      return Series.objects.filter(organizer=user, particpants__username=user)
     # not admin or logged in, you get nothing
     return None
 
 class SeriesListCreateView(SeriesMixin, ListCreateAPIView):
   serializer_class = SeriesSerializer
-  
 
 class SeriesRetrieveUpdateDestroyView(SeriesMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = SeriesSerializer
 
 
 # Events
+class EventsMixin:
+  def get_queryset(self):
+    user = self.request.user
+    # give all admin permissions to see everything
+    if user.is_staff:
+      return Events.objects.all()
+    # give logged-in users the ability to see what they are an organizer or particpant of
+    if not isinstance(user, AnonymousUser):
+      return Events.objects.filter(host=user, series__partipants__username=user)
+    # not admin or logged in, you get nothing
+    return None
+
 class EventListCreateView(ListCreateAPIView):
   serializer_class = EventSerializer
-  queryset = Event.objects.all()
 
 class EventRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
   serializer_class = EventSerializer
-  queryset = Event.objects.all()
