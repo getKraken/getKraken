@@ -12,6 +12,11 @@ django-crispy-forms = "^1.10.0"
 django-debug-toolbar = "^3.2"
 whitenoise = "^5.2.0"
 djangorestframework = "^3.12.2"
+gunicorn = "^20.0.4"
+docker = "^4.4.1"
+docker-compose = "^1.27.4"
+psycopg2-binary = "^2.8.6"
+django-environ = "^0.4.5"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
