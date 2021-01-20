@@ -21,11 +21,11 @@
 # volumes:
 #   postgres_data:
 
-version: "3.7"
+version: "3"
 
 services:
   db:
-    image: postgres:11
+    image: postgres
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
