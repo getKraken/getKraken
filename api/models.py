@@ -22,6 +22,8 @@ class Series(models.Model):
   round = models.IntegerField(blank=True, null=True)
   pick = models.IntegerField(blank=True, null=True)
   remainder = models.IntegerField(blank=True, null=True)
+  draft_generation_complete = models.BooleanField(default=False)
+  draft_complete = models.BooleanField(default=False)
 
 
   def __str__(self):

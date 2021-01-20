@@ -60,6 +60,7 @@ def GenerateDraftOrderView(request):
   The function stores the resulting array in the database as an attribute of the "series".
   The function sets the "round" and "pick" attributes of the "series" to 1.
   The "remainder" attribute of the "series" should be set to the value calculated by total_events-participants*rounds.
+  The "draft_generation_complete" boolean attribute of the series should be updated to be True.
   The function based view then redirects the page to be a view that shows the overall draft order.
   The view for the overall draft order, then sends the draft order and current draft round and pick numbers to React for rendering.
     - Could possibly instead just send it to the single series review screen.
@@ -128,7 +129,7 @@ def GenerateDraftOrderView(request):
   # should we use "JsonResponse"?
   remainder = 2
   message_to_return = "The draft order has been calculated.  There will be " + remainder + "game(s) not included in the draft.  Visit the individual Series page to view the draft order."
-  return {message_to_return}
+  return {"message": message_to_return}
 
 
 def ClaimEventAsHostView(request):
@@ -142,7 +143,7 @@ def ClaimEventAsHostView(request):
   
   # if the Pick count is higher than the number of Participants, reset it to 1 and increment the Round count by 1
 
-  # if Round count is higher than the number of draft rounds, somehow mark the draft as complete
+  # if Round count is higher than the number of draft rounds, somehow mark the draft as complete in database
 
   # create a response message
   figure_out_user = "USERNAME"
@@ -150,4 +151,4 @@ def ClaimEventAsHostView(request):
   round_holder = 22
   pick_holder = 22
   message_to_return = "Congrats!  " + figure_out_user + " has successfully claimed " + figure_out_event + ".  It is now the next person's turn in the draft.  We are at Pick number " + pick_holder + " of Round " + round_holder + "."
-  return {message_to_return}
+  return {"message": message_to_return}
