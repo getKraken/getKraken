@@ -15,7 +15,7 @@ class UserMixin:
       return Series.objects.all()
     # give logged-in users the ability to see themselves as a user
     if not isinstance(user, AnonymousUser):
-      return Series.objects.filter(username=user)
+      return Series.objects.filter(email=user.email)
     # not admin or logged in, you get nothing
     return None
 
@@ -35,7 +35,9 @@ class SeriesMixin:
       return Series.objects.all()
     # give logged-in users the ability to see what they are an organizer or particpant of
     if not isinstance(user, AnonymousUser):
-      return Series.objects.filter(organizer=user, participants__username=user)
+      series_organizer = Series.objects.filter(organizer=user)
+      series_participant = Series.objects.filter(participants__email=user.email)
+      return series_organizer.union(series_participant)
     # not admin or logged in, you get nothing
     return None
 
@@ -47,23 +49,25 @@ class SeriesRetrieveUpdateDestroyView(SeriesMixin, RetrieveUpdateDestroyAPIView)
 
 
 # Events
-class EventsMixin:
+class EventMixin:
   def get_queryset(self):
     user = self.request.user
     # give all admin permissions to see everything
     if user.is_staff:
-      return Events.objects.all()
+      return Event.objects.all()
     # give logged-in users the ability to see what events they in if:
     # 1) are a host
     # or
     # 2) participant of a series the events is in
     if not isinstance(user, AnonymousUser):
-      return Events.objects.filter(host=user, series__participants__username=user)
+      event_host = Event.objects.filter(host__email=user.email)
+      event_in_series = Event.objects.filter(series__participants__email=user.email)
+      return event_host.union(event_in_series)
     # not admin or logged in, you get nothing
     return None
 
-class EventListCreateView(ListCreateAPIView):
+class EventListCreateView(EventMixin, ListCreateAPIView):
   serializer_class = EventSerializer
 
-class EventRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+class EventRetrieveUpdateDestroyView(EventMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = EventSerializer
