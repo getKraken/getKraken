@@ -12,10 +12,10 @@ class UserMixin:
     user = self.request.user
     # give all admin permissions to see everything
     if user.is_staff:
-      return Series.objects.all()
+      return User.objects.all()
     # give logged-in users the ability to see themselves as a user
     if not isinstance(user, AnonymousUser):
-      return Series.objects.filter(email=user.email)
+      return User.objects.filter(email=user.email)
     # not admin or logged in, you get nothing
     return None
 
