@@ -2,6 +2,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .serializers import UserSerializer, SeriesSerializer, EventSerializer, SubscriptionSerializer
 from .models import User, Series, Event, Subscription
 from django.http import HttpResponse
+from django.shortcuts import redirect
 # TODO: from .permissions import ??? isAuthorOrReadOnly ??? and then add stuff to particular views
 
 # Naming convention: (Single)OBJECT(List) + CRUD-options + View
@@ -105,6 +106,14 @@ def GenerateDraftOrderView(request):
 # print('uneven rounds:',random_draft([1,2], [1,2,3,4,5,6,7,8,9,10,11,12,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]))
 
 
+
+
+
+  # this code will hopefully perform the redirect
+  # if not work, likely need to combine next two lines or figure out how to identify series id
+  # desired_path = 'series/' + series.id + '/'
+  # response = redirect(desired_path)
+  # return response
 
   html = "<html><body>The view to generate a draft order has been reached.</body></html>"
   return HttpResponse(html)

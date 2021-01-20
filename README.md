@@ -42,3 +42,5 @@ https://docs.djangoproject.com/en/3.1/ref/models/fields/#django.db.models.Foreig
 - [PostgreSQL specific model fields](https://docs.djangoproject.com/en/3.1/ref/contrib/postgres/fields/)
 - Skyler!!!
 - [django docs about views](https://docs.djangoproject.com/en/3.1/topics/http/views/)
+- [django redirects](https://realpython.com/django-redirects/)
+- [django database queries](https://docs.djangoproject.com/en/3.1/topics/db/queries/)

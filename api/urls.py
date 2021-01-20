@@ -9,6 +9,7 @@ from .views import (
   SubscriptionListCreateView,
   SingleSubscriptionRetrieveUpdateDestroyView,
   GenerateDraftOrderView,
+  redirect_view,
 )
 
 urlpatterns = [
@@ -25,4 +26,6 @@ urlpatterns = [
 
   path('subscription/', SubscriptionListCreateView.as_view(), name='subscription_api'),
   path('subscription/<int:pk>', SingleSubscriptionRetrieveUpdateDestroyView.as_view(), name='single_subscription_api'),
+
+  path('/redirect/', redirect_view),
 ]
