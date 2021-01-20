@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 class SeriesSerializer(serializers.ModelSerializer):
   class Meta:
     model = Series
-    fields = 'id','title','organizer' 
+    fields = 'id','title','organizer','draft_order','round','pick','remainder'
 
 class EventSerializer(serializers.ModelSerializer):
   class Meta:

@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .serializers import UserSerializer, SeriesSerializer, EventSerializer, SubscriptionSerializer
 from .models import User, Series, Event, Subscription
@@ -109,11 +110,44 @@ def GenerateDraftOrderView(request):
 
 
 
+  # RESPONSE ------
+  # sounds like a response of html or redirect will not work because it requires the use of django front end... therefore, just return JSON
+
+  # no longer using redirect
   # this code will hopefully perform the redirect
   # if not work, likely need to combine next two lines or figure out how to identify series id
   # desired_path = 'series/' + series.id + '/'
   # response = redirect(desired_path)
   # return response
 
-  html = "<html><body>The view to generate a draft order has been reached.</body></html>"
-  return HttpResponse(html)
+  # no longer using html response
+  # html = "<html><body>The view to generate a draft order has been reached.</body></html>"
+  # return HttpResponse(html)
+
+  #respond with json
+  # should we use "JsonResponse"?
+  remainder = 2
+  message_to_return = "The draft order has been calculated.  There will be " + remainder + "game(s) not included in the draft.  Visit the individual Series page to view the draft order."
+  return {message_to_return}
+
+
+def ClaimEventAsHostView(request):
+  # confirm it is the user's turn to claim an event
+
+  # confirm the event is currently available
+
+  # update the Event in the database to assign the current user as the Host of the Event
+
+  # increment the Pick counter by 1
+  
+  # if the Pick count is higher than the number of Participants, reset it to 1 and increment the Round count by 1
+
+  # if Round count is higher than the number of draft rounds, somehow mark the draft as complete
+
+  # create a response message
+  figure_out_user = "USERNAME"
+  figure_out_event = "EVENT-DESCRIPTION"
+  round_holder = 22
+  pick_holder = 22
+  message_to_return = "Congrats!  " + figure_out_user + " has successfully claimed " + figure_out_event + ".  It is now the next person's turn in the draft.  We are at Pick number " + pick_holder + " of Round " + round_holder + "."
+  return {message_to_return}
