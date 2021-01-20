@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.fields import IntegerField
 from accounts.models import CustomUser
+from django.contrib.postgres.fields.array import ArrayField
 
 class User(CustomUser):
   # username = models.CharField(max_length=64)
@@ -11,7 +13,16 @@ class User(CustomUser):
 class Series(models.Model):
   title = models.CharField(max_length=64)
   organizer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    # TODO: Add an owner of the series
+
+  draft_order = ArrayField(
+    ArrayField(
+      models.IntegerField(blank=True, null=True)
+    )
+    )
+  round = models.IntegerField(blank=True, null=True)
+  pick = models.IntegerField(blank=True, null=True)
+  remainder = models.IntegerField(blank=True, null=True)
+
 
   def __str__(self):
     return f"The Series {self.title} is organized by {self.organizer}."
