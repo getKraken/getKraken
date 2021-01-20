@@ -29,7 +29,7 @@ class SeriesMixin:
       return Series.objects.all()
     # give logged-in users the ability to see what they are an organizer or particpant of
     if not isinstance(user, AnonymousUser):
-      return Series.objects.filter(organizer=user, particpants__username=user)
+      return Series.objects.filter(organizer=user, participants__username=user)
     # not admin or logged in, you get nothing
     return None
 
@@ -49,7 +49,7 @@ class EventsMixin:
       return Events.objects.all()
     # give logged-in users the ability to see what they are an organizer or particpant of
     if not isinstance(user, AnonymousUser):
-      return Events.objects.filter(host=user, series__partipants__username=user)
+      return Events.objects.filter(host=user, series__participants__username=user)
     # not admin or logged in, you get nothing
     return None
 
