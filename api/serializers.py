@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
       user = get_user_model().objects.create_user(
-          usernamer=validated_data['username'],
+          username=validated_data['username'],
           password=validated_data['password'],
           email=validated_data['email'],
       )
@@ -16,15 +16,15 @@ class UserSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = User
-    fields = 'id','email','password','username'
+    fields = 'email','password','username'
 
 class SeriesSerializer(serializers.ModelSerializer):
   class Meta:
     model = Series
-    fields = 'id','title','organizer','participants'
+    fields = 'title','organizer','participants'
 
 class EventSerializer(serializers.ModelSerializer):
   class Meta:
     model = Event
-    fields = 'id','series','description','host' 
+    fields = 'series','description','host' 
 
