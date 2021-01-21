@@ -6,6 +6,8 @@ from .models import User, Series, Event
 from .serializers import UserSerializer, SeriesSerializer, EventSerializer
 from rest_framework.permissions import IsAdminUser
 from django.http.response import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 import random
 import copy
 import json
@@ -25,12 +27,15 @@ class UserMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class UserListCreateView(UserMixin, ListCreateAPIView):
   serializer_class = UserSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class UserRetrieveUpdateDestroyView(UserMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = UserSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GetSelfView(ListCreateAPIView):
   serializer_class = UserSerializer
 
@@ -55,9 +60,11 @@ class SeriesMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SeriesListCreateView(SeriesMixin, ListCreateAPIView):
   serializer_class = SeriesSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SeriesRetrieveUpdateDestroyView(SeriesMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = SeriesSerializer
 
@@ -80,9 +87,11 @@ class EventMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class EventListCreateView(EventMixin, ListCreateAPIView):
   serializer_class = EventSerializer
-  
+
+@method_decorator(csrf_exempt, name='dispatch')
 class EventRetrieveUpdateDestroyView(EventMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = EventSerializer
 
