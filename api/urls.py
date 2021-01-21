@@ -3,11 +3,9 @@ from .views import (
   UserListCreateView,
   UserRetrieveUpdateDestroyView,
   SeriesListCreateView,
-  SingleSeriesRetrieveUpdateDestroyView,
+  SeriesRetrieveUpdateDestroyView,
   EventListCreateView,
-  SingleEventRetrieveUpdateDestroyView,
-  SubscriptionListCreateView,
-  SingleSubscriptionRetrieveUpdateDestroyView,
+  EventRetrieveUpdateDestroyView,
 )
 
 urlpatterns = [
@@ -15,11 +13,8 @@ urlpatterns = [
   path('user/<int:pk>/', UserRetrieveUpdateDestroyView.as_view(), name='single_user_api'),
 
   path('series/', SeriesListCreateView.as_view(), name='series_api'),
-  path('series/<int:pk>/', SingleSeriesRetrieveUpdateDestroyView.as_view(), name='single_series_api'),
+  path('series/<int:pk>/', SeriesRetrieveUpdateDestroyView.as_view(), name='single_series_api'),
 
   path('event/', EventListCreateView.as_view(), name='event_api'),
-  path('event/<int:pk>', SingleEventRetrieveUpdateDestroyView.as_view(), name='single_event_api'),
-
-  path('subscription/', SubscriptionListCreateView.as_view(), name='subscription_api'),
-  path('subscription/<int:pk>', SingleSubscriptionRetrieveUpdateDestroyView.as_view(), name='single_subscription_api'),
+  path('event/<int:pk>', EventRetrieveUpdateDestroyView.as_view(), name='single_event_api'),
 ]
