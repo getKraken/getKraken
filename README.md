@@ -44,3 +44,5 @@ https://docs.djangoproject.com/en/3.1/ref/models/fields/#django.db.models.Foreig
 - [django docs about views](https://docs.djangoproject.com/en/3.1/topics/http/views/)
 - [django redirects](https://realpython.com/django-redirects/)
 - [django database queries](https://docs.djangoproject.com/en/3.1/topics/db/queries/)
+- [count of many field](https://stackoverflow.com/questions/27149984/django-how-to-get-count-for-manytomany-field)
+- [json dump](https://www.w3schools.com/python/python_json.asp)
