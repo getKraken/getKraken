@@ -17,7 +17,8 @@ class Series(models.Model):
   draft_order = ArrayField(
     ArrayField(
       models.IntegerField(blank=True, null=True)
-    )
+    ),
+    blank=True,
     )
   round = models.IntegerField(blank=True, null=True)
   pick = models.IntegerField(blank=True, null=True)

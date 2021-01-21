@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='series',
             name='draft_order',
-            field=django.contrib.postgres.fields.ArrayField(base_field=django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(blank=True, null=True), size=None), default=[[1, 3, 2], [2, 3, 1], [3, 2, 1]], size=None),
+            field=django.contrib.postgres.fields.ArrayField(base_field=django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(blank=True, null=True), size=None), default=None, size=None),
             preserve_default=False,
         ),
         migrations.AddField(
