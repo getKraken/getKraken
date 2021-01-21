@@ -110,9 +110,10 @@ def GenerateDraftOrderView(request, pk):
   # https://www.w3schools.com/python/python_json.asp
 
   # draft_order_as_json = 'pending write to json'
-  # draft_order_as_json = json.dumps({"draft_order": full_draft})
-  # series_of_interest.draft_order = draft_order_as_json
-  # to parse the json later, use:  y = json.loads(x)
+  draft_order_as_json = json.dumps({"draft_order": full_draft})
+  series_of_interest.draft_order = draft_order_as_json
+  # to parse the json in python, use:  y = json.loads(x)
+  # to parse the json in javascript, use: const obj = JSON.parse(json)
   series_of_interest.round = 1
   series_of_interest.pick = 1
   series_of_interest.remainder = remainder
