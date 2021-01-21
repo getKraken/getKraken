@@ -21,7 +21,9 @@ class UserSerializer(serializers.ModelSerializer):
 class SeriesSerializer(serializers.ModelSerializer):
   class Meta:
     model = Series
-    fields = 'id','title','organizer','participants','draft_order','round','pick','remainder','draft_generation_complete','draft_complete'
+    fields = 'id','title','organizer','participants','round','pick','remainder','draft_generation_complete','draft_complete'
+    depth = 1
+    # fields = 'id','title','organizer','participants','draft_order','round','pick','remainder','draft_generation_complete','draft_complete','total_rounds','total_picks'
 
 #  NOTE: this is used to take the foreign keys in the table and convert them to usernames, series names, or event-series relations (or other relationships)
 
@@ -51,4 +53,6 @@ class EventSerializer(serializers.ModelSerializer):
   class Meta:
     model = Event
     fields = 'id','series','description','host' 
+    depth = 1
+
 

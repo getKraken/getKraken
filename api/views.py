@@ -1,9 +1,14 @@
+from django.contrib.auth import get_user
 from django.http.response import JsonResponse
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django.contrib.auth.models import AnonymousUser
 from .models import User, Series, Event
 from .serializers import UserSerializer, SeriesSerializer, EventSerializer
 from rest_framework.permissions import IsAdminUser
+from django.http.response import JsonResponse
+import random
+import copy
+import json
 
 # Naming convention: OBJECT(List) + CRUD-options + View
 
@@ -73,109 +78,131 @@ class EventListCreateView(EventMixin, ListCreateAPIView):
 class EventRetrieveUpdateDestroyView(EventMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = EventSerializer
 
-def GenerateDraftOrderView(request):
-  '''
-  Overall Steps:
-  When viewing a single series with all of the events and participant users added, the series organizer can click a one-time button to generate a "draft order".
-  When clicked, the url is sent to the API to call a "function based view".
-  The function based view retrieves the user/participants for this series using a database call and filter.
-  The function based view retrieves the events for this series using a database call and filter.
-  The function calls the drafting helper function (or just living inside of it as a part of this function) with the user/participant and event info.  (Event info could just be number of events... aka length.)
-  The function based view calculates the draft order as an array of arrays.
-    - The randomizer draft function (contained within the function based view) was created by Yoni.  Conducts only full rounds, randomizes odd rounds of draft, reverses odd rounds as the next even rounds, tries to add fairness with attempts to not repeat identical rounds, may or may not return random numbers for the leftover/remainder rounds.
-    - Each inner array represents a "round" in the "draft".  Each element in an inner array represents a "pick" in that "round".
-  The function stores the resulting array in the database as an attribute of the "series".
-  The function sets the "round" and "pick" attributes of the "series" to 1.
-  The "remainder" attribute of the "series" should be set to the value calculated by total_events-participants*rounds.
-  The "draft_generation_complete" boolean attribute of the series should be updated to be True.
-  The function based view then redirects the page to be a view that shows the overall draft order.
-  The view for the overall draft order, then sends the draft order and current draft round and pick numbers to React for rendering.
-    - Could possibly instead just send it to the single series review screen.
-    - A test case will be done first to just show simple html message showing the function based view is being called.
 
+def GenerateDraftOrderView(request, pk):
+
+  series_of_interest = Series.objects.get(id=pk)
+  participants_of_series = series_of_interest.participants
+  number_of_participants = participants_of_series.count()
+
+  events_in_this_series = Event.objects.filter(series=pk)
+  number_of_events_in_this_series = events_in_this_series.count()
+
+  user_IDs = [user.id for user in participants_of_series.iterator()]
+
+  full_draft = []
+  max_rounds = (number_of_events_in_this_series//number_of_participants)
+  remainder = number_of_events_in_this_series % number_of_participants
+
+  while len(full_draft) < max_rounds:
+    current_order = copy.copy(user_IDs)
+    random.shuffle(current_order)
+    full_draft += [current_order]
+
+    if len(full_draft) < max_rounds:
+      reverse_order = []
+      for i in range(len(current_order)):
+        reverse_index = len(current_order) - 1 -i
+        reverse_order += [current_order[reverse_index]]
+      full_draft += [reverse_order]
+
+  # Jsondumps encode look up stringify store as text field
+  # https://www.w3schools.com/python/python_json.asp
+
+  # draft_order_as_json = 'pending write to json'
+  draft_order_as_json = json.dumps({"draft_order": full_draft})
+  series_of_interest.draft_order = draft_order_as_json
+  # to parse the json in python, use:  y = json.loads(x)
+  # to parse the json in javascript, use: const obj = JSON.parse(json)
+  series_of_interest.round = 1
+  series_of_interest.pick = 1
+  series_of_interest.remainder = remainder
+  series_of_interest.draft_generation_complete = True
+  # series_of_interest.total_rounds = max_rounds
+  # series_of_interest.total_picks = number_of_participants
+  series_of_interest.save()
+
+
+  '''
+  POSSIBLE HELPFUL INFO AND SOURCES:
   django docs about views:  https://docs.djangoproject.com/en/3.1/topics/http/views/
   Helpful terms and hints:
     - object relational mapper (ORM)  --so that we don't have to write SQL
     - Object Manager:  <ourObject>.objects
 
+  example pseudo code:
   # target_series = Series.objects.all().filter(title="Season 2021")
-
   # request.params.pk = pk ?
   # target_series.round += 1
-  
   # target_series.save()
-
   '''
 
-# Yoni's code for figuring out the draft order; will be put in here once we know the routes are connected and his inputs are available.
-# import random
-# import copy
-# user_IDs = [1,2,3,4,5]
-# event_IDs = [6,7,8,9,10]
 
-# def random_draft(user_IDs, event_IDs):
-
-#   full_draft = []
-#   max_rounds = (len(event_IDs)//len(user_IDs))
-#   while len(full_draft) < max_rounds:
-#     current_order = copy.copy(user_IDs)
-#     shuffle = random.shuffle(current_order)
-#     if current_order not in full_draft:
-#       full_draft += [current_order]
-#       if len(full_draft) < max_rounds:
-#         reverse_order = []
-#         for i in range(len(current_order)):
-#           reverse_index = len(current_order) - 1 -i
-#           reverse_order += [current_order[reverse_index]]
-#         full_draft += [reverse_order]
-#   return full_draft
-
-# print('one round:',random_draft(user_IDs, event_IDs))
-# print('more rounds:',random_draft(user_IDs, [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]))
-# print('uneven rounds:',random_draft([1,2], [1,2,3,4,5,6,7,8,9,10,11,12,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]))
+  message_to_return = "The draft order has been calculated.  There will be " + str(remainder) + " game(s) not included in the draft.  Visit the individual Series page to view the draft order... The draft order array of array: " + str(full_draft)
+  response = {"message": message_to_return, "status_code": 200}
+  return JsonResponse(response)
 
 
 
-
-
-  # RESPONSE ------
-  # sounds like a response of html or redirect will not work because it requires the use of django front end... therefore, just return JSON
-
-  # no longer using redirect
-  # this code will hopefully perform the redirect
-  # if not work, likely need to combine next two lines or figure out how to identify series id
-  # desired_path = 'series/' + series.id + '/'
-  # response = redirect(desired_path)
-  # return response
-
-  # no longer using html response
-  # html = "<html><body>The view to generate a draft order has been reached.</body></html>"
-  # return HttpResponse(html)
-
-  #respond with json
-  # should we use "JsonResponse"?
-  remainder = 2
-  message_to_return = "The draft order has been calculated.  There will be " + remainder + "game(s) not included in the draft.  Visit the individual Series page to view the draft order."
-  return {"message": message_to_return}
-
-
-def ClaimEventAsHostView(request):
-  # confirm it is the user's turn to claim an event
-
+def ClaimEventAsHostView(request, pk):
   # confirm the event is currently available
+  event_of_interest = Event.objects.get(id=pk)
+  if event_of_interest.host:
+    message_to_return = "This event already has a host or has already been claimed.  Please select a different event."
+    response = {"message": message_to_return, "status_code": 200}
+    return JsonResponse(response)
+  
+  # confirm it is the user's turn to claim an event
+  part_of_series_pk = event_of_interest.series
+  series_of_interest = Series.objects.get(id=part_of_series_pk)
+  y = json.loads(series_of_interest.draft_order)
+  draft_order_as_array = y.draft_order
+
+  # how can we figure out which user requested this?
+  user = get_user()
+
+  if draft_order_as_array[series_of_interest.round][series_of_interest.pick] != user.id:
+    message_to_return = "It is not your turn to claim to host or attend an event.  Please be patient and wait your turn."
+    response = {"message": message_to_return, "status_code": 200}
+    return JsonResponse(response)
 
   # update the Event in the database to assign the current user as the Host of the Event
+  event_of_interest.host = user.id
+  event_of_interest.save()
 
-  # increment the Pick counter by 1
-  
-  # if the Pick count is higher than the number of Participants, reset it to 1 and increment the Round count by 1
+  # increment the Pick counter by 1. If the Pick count is higher than the number of Participants, reset it to 1 and increment the Round count by 1
+  pick = series_of_interest.pick
 
-  # if Round count is higher than the number of draft rounds, somehow mark the draft as complete in database
+  participants_of_series = series_of_interest.participants
+  number_of_participants = participants_of_series.count()
 
-  # create a response message
-  figure_out_user = "USERNAME"
-  figure_out_event = "EVENT-DESCRIPTION"
-  round_holder = 22
-  pick_holder = 22
-  message_to_return = "Congrats!  " + figure_out_user + " has successfully claimed " + figure_out_event + ".  It is now the next person's turn in the draft.  We are at Pick number " + pick_holder + " of Round " + round_holder + "."
-  return {"message": message_to_return}
+  if pick+1 <= number_of_participants:
+    series_of_interest.pick += 1
+    series_of_interest.save()
+  else:
+    series_of_interest.round += 1
+    series_of_interest.pick = 1
+    series_of_interest.save()
+
+  # if Round count is higher than the number of draft rounds, mark the draft as complete in database
+  participants_of_series = series_of_interest.participants
+  number_of_participants = participants_of_series.count()
+
+  events_in_this_series = Event.objects.filter(series=part_of_series_pk)
+  number_of_events_in_this_series = events_in_this_series.count()
+
+  max_rounds = (number_of_events_in_this_series//number_of_participants)
+
+  if series_of_interest.round > max_rounds:
+    series_of_interest.draft_complete = True
+    series_of_interest.save()
+
+    message_to_return = "This was the final pick of the draft.  Enjoy the events!"
+    response = {"message": message_to_return, "status_code": 200}
+    return JsonResponse(response)
+
+
+  # response for a typical pick
+  message_to_return = "Congrats!  " + str(user.username) + " has successfully claimed " + str(event_of_interest.description) + ".  It is now the next person's turn in the draft.  We are at Pick number " + str(series_of_interest.pick) + " of Round " + str(series_of_interest.round) + "."
+  response = {"message": message_to_return, "status_code": 200}
+  return JsonResponse(response)
