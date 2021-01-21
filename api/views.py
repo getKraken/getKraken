@@ -185,9 +185,6 @@ def ClaimEventAsHostView(request, pk):
     series_of_interest.save()
 
   # if Round count is higher than the number of draft rounds, mark the draft as complete in database
-  participants_of_series = series_of_interest.participants
-  number_of_participants = participants_of_series.count()
-
   events_in_this_series = Event.objects.filter(series=part_of_series_pk)
   number_of_events_in_this_series = events_in_this_series.count()
 
