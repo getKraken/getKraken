@@ -1,0 +1,115 @@
+.signInPageLayout{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+
+.signInPageHeader{
+  display: flex;
+  flex-wrap: nowrap; 
+  float: right;
+  background-color: #9CCB3B;
+  
+}
+
+.signInPageHeader input{
+  background-color: white;
+  width: 300px;
+  height: 50px;
+  margin: 0px;
+  text-align: left;
+  line-height: 70px;
+  font-size: 30px;
+  right: 300px;
+}
+.username{
+  position: absolute;
+  left: 930px;
+}
+
+.psw{
+  position: relative;
+  left: 1050px;
+}
+
+.signInPageHeader button{
+  cursor: pointer;
+  padding: 6px 10px;
+  height: 56px;
+  right: 0;
+  margin-right: 16px;
+  background-color: #555;
+  color: white;
+  font-size: 30px;
+  border: none;
+  position: absolute;
+  /*right: 30px; */
+}
+
+.signInPageBody{
+  background-color: white; 
+  display: flex;
+  flex-grow: 1;
+}
+
+.appDescription{
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  flex: 0.5;
+  font-size: 20px;
+  margin: 30px;
+  color: black;
+  border-radius: 30px;
+  
+}
+
+.appDescription img{
+  width: 700px;
+  flex: 2;
+  border-radius: 30px;
+}
+
+.appDescription h1{
+  flex: 1;
+  font-family:'Times New Roman', Times, serif;
+}
+
+.loginInfo{
+/* background-color: hotpink; */
+  display: flex;
+  flex: 1;
+  margin-right: 100px;
+  flex-direction: column;
+  align-items: flex-end;
+  color: black;
+}
+
+.loginInfo input{
+  flex: 1;
+  width: 400px;
+  height: 30px;
+  background-color: lightgray;
+  border-radius: 10px;
+}
+
+.signUpButton{
+  background-color: rgb(151, 156, 151);
+  padding: 3px 50px;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin-right: 130px;
+  font-size: 0.7em;
+
+}
+
+.signUpButton:hover{
+  background-color: #244993;
+  color: white ;
+}
+
+.loginInfo label{
+  font-family: 'Times New Roman', Times, serif;
+}

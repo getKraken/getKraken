@@ -1,12 +1,12 @@
 import React from 'react';
 import InputField from '../components/InputField';
 import SubmitButton from '../components/SubmitButton';
-
+import '../styles/LonginForm';
 class LonginForm extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      username:'',
+      email:'',
       password:'',
       buttonDisabled: false,
       isAuthenticated: false
@@ -25,14 +25,14 @@ class LonginForm extends React.Component {
 
   resetForm(){
     this.setState({
-      username:'',
+      email:'',
       password:'',
       buttonDisabled:false
     })
   }
 
-  async doSinUp(){
-    if(!this.state.username){
+  async doSignUp(){
+    if(!this.state.email){
       return;
     }
     if(!this.state.password){
@@ -46,10 +46,10 @@ class LonginForm extends React.Component {
         method:'POST',
         headers:{
           'Accept':'application/json',
-          'Contnent-Type':'application/json'
+          'Content-Type':'application/json'
         },
         body:JSON.stringify({
-          username:this.state.username,
+          email:this.state.email,
           password: this.state.password
         })
 
@@ -74,11 +74,25 @@ class LonginForm extends React.Component {
   
   render(){
     return(
-      <div className="singUpPage">
+      <div className="signUpPage">
         Log in 
         <InputField
-          type= 'text'
-          placeholder='user'
+          type= 'email'
+          placeholder='Email'
+          value={this.state.email ? this.state.email : ''}
+          onChange={(val)=> this.setInputValue('email',val)}
+        />
+        <InputField
+          type= 'password'
+          placeholder='Password'
+          value={this.state.password ? this.state.password : ''}
+          onChange={(val)=> this.setInputValue('password',val)}
+        />
+
+        <SubmitButton
+          text = 'Login'
+          disabled = {this.state.buttonDisabled}
+          onClick={()=> this.doSignUp()}
         />
       </div>
     );
