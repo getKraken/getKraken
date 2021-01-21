@@ -9,11 +9,14 @@ from .views import (
   EventRetrieveUpdateDestroyView,
   GenerateDraftOrderView,
   ClaimEventAsHostView,
+  GetSelfView,
 )
 
 urlpatterns = [
   path('user/', UserListCreateView.as_view(), name='user_api'),
   path('user/<int:pk>/', UserRetrieveUpdateDestroyView.as_view(), name='single_user_api'),
+  
+  path('self/', GetSelfView.as_view(), name="get_self_api"),
 
   path('series/', SeriesListCreateView.as_view(), name='series_api'),
   path('series/<int:pk>/', SeriesRetrieveUpdateDestroyView.as_view(), name='single_series_api'),

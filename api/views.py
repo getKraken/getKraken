@@ -31,6 +31,14 @@ class UserListCreateView(UserMixin, ListCreateAPIView):
 class UserRetrieveUpdateDestroyView(UserMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = UserSerializer
 
+class GetSelfView(ListCreateAPIView):
+  serializer_class = UserSerializer
+
+  def get_queryset(self):
+    user = self.request.user
+      
+    return User.objects.filter(username=user.username)
+
 
 # Series
 class SeriesMixin:
