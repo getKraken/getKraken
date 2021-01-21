@@ -13,12 +13,12 @@ class Series(models.Model):
   participants = models.ManyToManyField(get_user_model())
   organizer = models.ForeignKey(get_user_model(), related_name="organizer", on_delete=models.CASCADE)
 
-  draft_order = ArrayField(
-    ArrayField(
-      models.IntegerField(blank=True, null=True)
-    ),
-    blank=True,
-    )
+  # draft_order = ArrayField(
+  #   ArrayField(
+  #     models.IntegerField(blank=True, null=True)
+  #   ),
+  #   blank=True,
+  #   )
   round = models.IntegerField(blank=True, null=True)
   pick = models.IntegerField(blank=True, null=True)
   remainder = models.IntegerField(blank=True, null=True)
