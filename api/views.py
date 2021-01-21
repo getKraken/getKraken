@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAdminUser
 from django.http.response import JsonResponse
 import random
 import copy
+import json
 
 # Naming convention: OBJECT(List) + CRUD-options + View
 
@@ -78,21 +79,15 @@ class EventRetrieveUpdateDestroyView(EventMixin, RetrieveUpdateDestroyAPIView):
 
 def GenerateDraftOrderView(request, pk):
 
-  
-
   series_of_interest = Series.objects.get(id=pk)
-  
 
   participants_of_series = series_of_interest.participants
 
   number_of_participants = participants_of_series.count()
 
-
   events_in_this_series = Event.objects.filter(series=pk)
   number_of_events_in_this_series = events_in_this_series.count()
 
-
-  # user_IDs = [1,2,3,4,5]
   user_IDs = [user.id for user in participants_of_series.iterator()]
 
   full_draft = []
@@ -102,18 +97,17 @@ def GenerateDraftOrderView(request, pk):
   while len(full_draft) < max_rounds:
     random.shuffle(user_IDs)
     full_draft += [user_IDs]
-    if len(full_draft) < max_rounds-1:
-      user_IDs.reverse()
-      full_draft += [user_IDs]
 
+    if len(full_draft) < max_rounds:
+      # full_draft += [user_IDs.reverse()]
+      # using the reverse method does not work, needs long version
+      reverse_order = []
+      for i in range(len(user_IDs)):
+        reverse_index = len(user_IDs) - 1 -i
+        reverse_order += [user_IDs[reverse_index]]
+      full_draft += [reverse_order]
 
-
-      # reverse_order = []
-      # for i in range(len(user_IDs)):
-      #   reverse_index = len(user_IDs) - 1 -i
-      #   reverse_order += [user_IDs[reverse_index]]
-      # full_draft += [reverse_order]
-
+    # based on behavior seen when the conditional if statement is max_rounds-1, I think the odd rounds will always be the same.  We may need to do the copy thing Yoni has below.
 
   # full_draft = []
   # max_rounds = (len(event_IDs)//len(user_IDs))
@@ -131,41 +125,33 @@ def GenerateDraftOrderView(request, pk):
     # return full_draft
 
 
+  # Jsondumps encode look up stringify store as text field
+  # https://www.w3schools.com/python/python_json.asp
+
+  # draft_order_as_json = 'pending write to json'
+  # draft_order_as_json = json.dumps({"draft_order": full_draft})
+  # series_of_interest.draft_order = draft_order_as_json
+  # to parse the json later, use:  y = json.loads(x)
+  series_of_interest.round = 1
+  series_of_interest.pick = 1
+  series_of_interest.remainder = remainder
+  series_of_interest.draft_generation_complete = True
+  series_of_interest.save()
+
 
   '''
-  The function stores the resulting array in the database as an attribute of the "series".
-  The function sets the "round" and "pick" attributes of the "series" to 1.
-  The "remainder" attribute of the "series" should be set to the value calculated by total_events-participants*rounds.
-  The "draft_generation_complete" boolean attribute of the series should be updated to be True.
-  The function based view then redirects the page to be a view that shows the overall draft order.
-  The view for the overall draft order, then sends the draft order and current draft round and pick numbers to React for rendering.
-    - Could possibly instead just send it to the single series review screen.
-    - A test case will be done first to just show simple html message showing the function based view is being called.
-
+  POSSIBLE HELPFUL INFO AND SOURCES:
   django docs about views:  https://docs.djangoproject.com/en/3.1/topics/http/views/
   Helpful terms and hints:
     - object relational mapper (ORM)  --so that we don't have to write SQL
     - Object Manager:  <ourObject>.objects
 
+  example pseudo code:
   # target_series = Series.objects.all().filter(title="Season 2021")
-
   # request.params.pk = pk ?
   # target_series.round += 1
-  
   # target_series.save()
-
   '''
-
-
-
-
-
-
-  series_of_interest = Series.objects.get(id=pk)
-
-
-  # Jsondumps encode look up stringify store as text field
-
 
 
   message_to_return = "The draft order has been calculated.  There will be " + str(remainder) + " game(s) not included in the draft.  Visit the individual Series page to view the draft order... The draft order array of array: " + str(full_draft)
@@ -174,11 +160,17 @@ def GenerateDraftOrderView(request, pk):
 
 
 
-
-def ClaimEventAsHostView(request):
-  # confirm it is the user's turn to claim an event
-
+def ClaimEventAsHostView(request, pk):
   # confirm the event is currently available
+  event_of_interest = Event.objects.get(id=pk)
+  if event_of_interest.host:
+    response = {"message": "This event already has a host or has already been claimed.  Please select a different event."}
+    return JsonResponse(response)
+  
+  # confirm it is the user's turn to claim an event
+  part_of_series_pk = event_of_interest.series
+  
+
 
   # update the Event in the database to assign the current user as the Host of the Event
 
