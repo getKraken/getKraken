@@ -48,6 +48,23 @@ class SingleSeries extends Component {
 
     }
 
+    getDraftOrder() {
+        const usernames = {}
+        const people = this.state.series.participants;
+        people.forEach( person => usernames[person.id] = person.username );
+        
+        const draft_data = JSON.parse(this.state.series.draft_order).draft_order;
+
+        let output = draft_data.map( round => {
+            return round.map( id => usernames[id] );
+        })
+
+        for(let i = 0; i<output.length; i++)
+            output[i] = output[i].join(", ")
+
+        return output
+    }
+
     render() {
         return (
             <>
@@ -71,11 +88,22 @@ class SingleSeries extends Component {
                                 <h2 className="text-2xl mb-4">Draft Information</h2>
 
                                 {this.state.series.round ? (
+
                                   
                                   <div>
                                         <h3>Draft Order: {JSON.parse(this.state.series.draft_order).draft_order}</h3>
                                         <h3>Round Number: {this.state.series.round}</h3>
                                         <h3>Pick Number: {this.state.series.pick}</h3>
+
+
+                                    <div>
+                                        <h3>Draft Order</h3>
+                                        {this.getDraftOrder().map( (round,i) => (
+                                            <div key={i}>Round {i+1}: {round}</div>
+                                        ))}
+                                        <h3>Current Round: {this.state.series.round}</h3>
+                                        <h3>Current Pick: {this.state.series.pick}</h3>
+
                                     </div>
 
                                 ) : (
