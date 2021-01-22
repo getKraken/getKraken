@@ -57,16 +57,8 @@ class RegisterForm extends React.Component {
 
       });
       Router.push('/series-list');
-      // let result = await res.json();
-      // if(result && result.success){
-      //   this.setState({
-      //     isAuthenticated: true
-      //   });
-      // }
-      // else if (result && result.success === false){
-      //   this.resetForm();
-      //   alert(result.msg);
-      // }
+  
+    
     }
     catch(e){
       console.log(e);
