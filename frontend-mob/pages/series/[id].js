@@ -24,11 +24,11 @@ class SingleSeries extends Component {
         // alert('generate draf');
 
         const generate = await getGenerateData(this.state.id);
-        console.log('generate', generate); 
-        const series = {...this.state.series}
-        series.draft_order = JSON.stringify({draft_order: generate.message});
+        console.log('generate', generate);
+        const series = { ...this.state.series }
+        series.draft_order = JSON.stringify({ draft_order: generate.message });
         console.log(series.draft_order);
-        this.setState({series});
+        this.setState({ series });
 
 
     }
@@ -47,15 +47,15 @@ class SingleSeries extends Component {
     getDraftOrder() {
         const usernames = {}
         const people = this.state.series.participants;
-        people.forEach( person => usernames[person.id] = person.username );
-        
+        people.forEach(person => usernames[person.id] = person.username);
+
         const draft_data = JSON.parse(this.state.series.draft_order).draft_order;
 
-        let output = draft_data.map( round => {
-            return round.map( id => usernames[id] );
+        let output = draft_data.map(round => {
+            return round.map(id => usernames[id]);
         })
 
-        for(let i = 0; i<output.length; i++)
+        for (let i = 0; i < output.length; i++)
             output[i] = output[i].join(", ")
 
         return output
@@ -88,8 +88,8 @@ class SingleSeries extends Component {
 
                                     <div>
                                         <h3>Draft Order</h3>
-                                        {this.getDraftOrder().map( (round,i) => (
-                                            <div key={i}>Round {i+1}: {round}</div>
+                                        {this.getDraftOrder().map((round, i) => (
+                                            <div key={i}>Round {i + 1}: {round}</div>
                                         ))}
                                         <h3>Current Round: {this.state.series.round}</h3>
                                         <h3>Current Pick: {this.state.series.pick}</h3>
@@ -98,7 +98,12 @@ class SingleSeries extends Component {
                                 ) : (
                                         <div className="my-4">
                                             <h3 className="my-4 text-sm italic">{this.state.series.draft_order}</h3>
-                                            <button className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200">Create Event</button>
+
+                                            <SubmitButton className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200"
+                                                text='Generate Draft'
+                                                onClick={this.generateDraft}
+                                            />
+
 
                                         </div>
 
@@ -114,10 +119,7 @@ class SingleSeries extends Component {
                                 </ul>
                             </section>
 
-                            <SubmitButton className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200"
-                                text='Generate Draft'
-                                onClick={this.generateDraft}
-                            />
+                            <button className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200">Create Event</button>
                         </div>
                     </div>
                 </section>
