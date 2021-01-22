@@ -6,8 +6,8 @@ import LoginForm from '../Forms/LoginForm'
 export default function Home() {
   return (
     <div>
-      <h1> Registration Form</h1>
-     <RegisterForm/>
+      {/* <h1> Registration Form</h1>
+     <RegisterForm/> */}
      <h1> Login Form</h1>
      <LoginForm/>
     </div>

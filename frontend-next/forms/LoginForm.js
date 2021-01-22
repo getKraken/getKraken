@@ -2,94 +2,77 @@
 import React from 'react';
 import InputField from '../components/InputField';
 import SubmitButton from '../components/SubmitButton';
+import axios from 'axios';
 // import '../styles/LonginForm';
 import Router from 'next/router';
 class LoginForm extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-      username:'',
-      password:'',
+    this.state = {
+      username: '',
+      password: '',
       buttonDisabled: false,
       isAuthenticated: false
     }
   }
 
-  setInputValue(proprety, val){
+  setInputValue(proprety, val) {
     val = val.trim();
-    if(val.length > 64){
+    if (val.length > 64) {
       return;
     }
     this.setState({
-      [proprety]:val
+      [proprety]: val
     })
   }
 
-  resetForm(){
+  resetForm() {
     this.setState({
-      username:'',
-      password:'',
-      buttonDisabled:false
+      username: '',
+      password: '',
+      buttonDisabled: false
     })
   }
 
-  async doSignUp(){
-    if(!this.state.username){
+  async doSignUp() {
+    if (!this.state.username) {
       return;
     }
-    if(!this.state.password){
+    if (!this.state.password) {
       return;
     }
     this.setState({
-      buttonDisabled:true
+      buttonDisabled: true
     })
-    try {
-      await fetch('https://get-kraken.herokuapp.com/accounts/login/',{
-        method:'POST',
-        headers:{
-          'Accept':'application/json',
-          'Content-Type':'application/json'
-        },
-        body:JSON.stringify({
-          username:this.state.username,
-          password: this.state.password
-        })
-
-      })
-        .then(data => {
-          localStorage.setItem('access', data.access);
-          localStorage.setItem('refresh', data.refresh);
-        })
-      Router.push('/all-series');
-    }
-    catch(e){
-      console.log(e);
-      this.resetForm();
-    }
+    const url = "https://get-kraken.herokuapp.com/api/v1/token/";
+    const response = await axios.post(url, { username: this.state.username, password: this.state.password });
+    localStorage.setItem('kraken-access-token', response.data.access);
+    localStorage.setItem('kraken-refresh-token', response.data.refresh);
+    Router.push('/all-series');
   }
 
-  
-  render(){
-    return(
+
+  render() {
+    return (
       <div className="signUpPage">
-        Log in 
+        Log in
         <InputField
-          type= 'text'
+          type='text'
           placeholder='username'
           value={this.state.username ? this.state.username : ''}
-          onChange={(val)=> this.setInputValue('username',val)}
+          onChange={(val) => this.setInputValue('username', val)}
         />
         <InputField
-          type= 'password'
+          type='password'
           placeholder='Password'
           value={this.state.password ? this.state.password : ''}
-          onChange={(val)=> this.setInputValue('password',val)}
+          onChange={(val) => this.setInputValue('password', val)}
         />
 
         <SubmitButton
-          text = 'Login'
-          disabled = {this.state.buttonDisabled}
-          onClick={()=> this.doSignUp()}
+          text='Login'
+          disabled={this.state.buttonDisabled}
+          onClick={() => this.doSignUp()}
         />
       </div>
     );
