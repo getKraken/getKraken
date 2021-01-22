@@ -8,20 +8,21 @@ class UserSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
       user = get_user_model().objects.create_user(
-          usernamer=validated_data['username'],
+          username=validated_data['username'],
           password=validated_data['password'],
-          email=validated_data['email'],
       )
       return user
 
   class Meta:
     model = User
-    fields = 'id','email','password','username'
+    fields = 'id','password','username'
 
 class SeriesSerializer(serializers.ModelSerializer):
   class Meta:
     model = Series
-    fields = 'id','title','organizer','participants'
+    fields = 'id','title','organizer','participants','draft_order','round','pick','remainder','draft_generation_complete','draft_complete'
+    depth = 1
+
 
 #  NOTE: this is used to take the foreign keys in the table and convert them to usernames, series names, or event-series relations (or other relationships)
 
@@ -51,4 +52,6 @@ class EventSerializer(serializers.ModelSerializer):
   class Meta:
     model = Event
     fields = 'id','series','description','host' 
+    depth = 1
+
 
