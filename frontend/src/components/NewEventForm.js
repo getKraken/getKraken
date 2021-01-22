@@ -6,9 +6,15 @@ class NewEventForm extends React.Component {
     return (
       <div className="NewEventForm">
         <form>
-            <input>Event Title</input>
-            <input>Event Description</input>
-            <input>Event Date</input>
+            <label for='event-title'>Event Title:</label>
+            <input type='text' id='event-title'>Event Title</input>
+
+            <label for='event-description'>Event Description:</label>
+            <input type='text' id='event-date'>Event Description</input>
+
+            <label for='event-date'>Event Date:</label>
+            <input type='text' id='event-date'>Event Date</input>
+            
             <SubmitButton>Add New Event to the Series</SubmitButton>
         </form>
       </div>

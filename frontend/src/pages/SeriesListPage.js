@@ -1,5 +1,5 @@
 import React from 'react';
-import SingleSeries from '../components/SingleSeries';
+import SingleSeries from '../components/SeriesList';
 import NavBar from '../components/NavBar';
 import SubmitButton from '../components/SubmitButton';
 
