@@ -123,10 +123,6 @@ def GenerateDraftOrderView(request, pk):
         reverse_order += [current_order[reverse_index]]
       full_draft += [reverse_order]
 
-  # Jsondumps encode look up stringify store as text field
-  # https://www.w3schools.com/python/python_json.asp
-
-  # draft_order_as_json = 'pending write to json'
   draft_order_as_json = json.dumps({"draft_order": full_draft})
   series_of_interest.draft_order = draft_order_as_json
   # to parse the json in python, use:  y = json.loads(x)
@@ -135,8 +131,6 @@ def GenerateDraftOrderView(request, pk):
   series_of_interest.pick = 1
   series_of_interest.remainder = remainder
   series_of_interest.draft_generation_complete = True
-  # series_of_interest.total_rounds = max_rounds
-  # series_of_interest.total_picks = number_of_participants
   series_of_interest.save()
 
 
@@ -155,7 +149,7 @@ def GenerateDraftOrderView(request, pk):
   '''
 
 
-  message_to_return = "The draft order has been calculated.  There will be " + str(remainder) + " game(s) not included in the draft.  Visit the individual Series page to view the draft order... The draft order array of array: " + str(full_draft)
+  message_to_return = "The draft order has been calculated.  There will be " + str(remainder) + " game(s) not included in the draft.  Visit the individual Series page to view the draft order.  The draft_order array of arrays of integers is: " + str(full_draft)
   response = {"message": message_to_return, "status_code": 200}
   return JsonResponse(response)
 
