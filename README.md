@@ -38,3 +38,11 @@ https://trello.com/b/NCh6FI86/game-selection
 ## Sources
 - [to CASCADE or RESTRICT](
 https://docs.djangoproject.com/en/3.1/ref/models/fields/#django.db.models.ForeignKey)
+- [Skyler's Sweet Movie App](https://github.com/MyColl-Org/mycoll_back_end)
+- [PostgreSQL specific model fields](https://docs.djangoproject.com/en/3.1/ref/contrib/postgres/fields/)
+- Skyler!!!
+- [django docs about views](https://docs.djangoproject.com/en/3.1/topics/http/views/)
+- [django redirects](https://realpython.com/django-redirects/)
+- [django database queries](https://docs.djangoproject.com/en/3.1/topics/db/queries/)
+- [count of many field](https://stackoverflow.com/questions/27149984/django-how-to-get-count-for-manytomany-field)
+- [json dump](https://www.w3schools.com/python/python_json.asp)

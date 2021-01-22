@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import Axios from 'axios';
 
-function RegistrationForm () {
+function RegForm () {
   const [usernameReg, setUsernameReg] = useState('')
   const [passwordReg, setPasswordReg] = useState('')
     return (
-      <div className="registrationForm">
+      <div className="regForm">
         <h1>Create an account</h1>
         <label>First Name: <input type="text" id="firstName"/></label>
         <label>Last Name: 
@@ -29,4 +29,4 @@ function RegistrationForm () {
 
 }
 
-export default RegistrationForm;
+export default RegForm;
