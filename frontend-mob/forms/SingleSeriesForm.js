@@ -16,6 +16,7 @@ class SingleSeriesForm extends React.Component {
   async componentDidMount(){
     let newClaimedEventsList = [];
     let newUnclaimedEventsList = [];
+
     router = useRouter();
     const {id} = router.query;
     const url = 'http://get-kraken.herokuapp.com/api/v1/event';
@@ -24,6 +25,7 @@ class SingleSeriesForm extends React.Component {
     const response = await axios.get(url, config)
     console.log(response.data)
   }
+
 
 
     // GET the API for the Events List
