@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { getSeriesData, getEventData } from '../../services/data-fetcher'
 import { withRouter } from 'next/router'
+import NavBar from '../../components/NavBar.js'
 
 
 class SingleSeries extends Component {
@@ -67,26 +68,33 @@ class SingleSeries extends Component {
     render() {
         return (
             <>
-                <section className="text-gray-700 body-font">
-                    <div className="container px-8 mx-auto pt-36 lg:px-4">
-                        <div className="w-3/4 text-center mx-auto">
-
-                            <h1 className="text-4xl mb-8">Series: {this.state.series.title}</h1>
-
-                            <section className="my-6">
-                                <h2 className="text-2xl mb-4">Participants</h2>
-                                <ul>
-                                    {this.state.series.participants.map(participant => (
-                                        <li className="text-sm" key={participant.id}>{participant.username}</li>
+                <NavBar/>
+                <section className="text-gray-700 body-font bg-gray-400">
+                    <div >
+                        <h1 className="text-center text-4xl mt-0 mb-8 mr-16">Series: {this.state.series.title}</h1>
+                        <div className="w-7/8 text-center mx-auto">
+                        <div className='flex flex-row'>
+                          <aside className="sticky left my-6 w-48 bg-blue-300 ml-8 rounded-md">
+                              <h2 className="text-2xl text-center mb-4">Participants</h2>
+                              <ul>
+                                  {this.state.series.participants.map(participant => (
+                                    <li className="text-sm text-center" key={participant.id}>{participant.username}</li>
                                     ))}
-                                </ul>
-                            </section>
+                              </ul>
+                          </aside>
 
-                            <section className="my-6">
+                            <section className="my-6 ml-72">
 
                                 <h2 className="text-2xl mb-4">Draft Information</h2>
 
                                 {this.state.series.round ? (
+
+                                  
+                                  <div>
+                                        <h3>Draft Order: {JSON.parse(this.state.series.draft_order).draft_order}</h3>
+                                        <h3>Round Number: {this.state.series.round}</h3>
+                                        <h3>Pick Number: {this.state.series.pick}</h3>
+
 
                                     <div>
                                         <h3>Draft Order</h3>
@@ -95,6 +103,7 @@ class SingleSeries extends Component {
                                         ))}
                                         <h3>Current Round: {this.state.series.round}</h3>
                                         <h3>Current Pick: {this.state.series.pick}</h3>
+
                                     </div>
 
                                 ) : (
@@ -105,8 +114,8 @@ class SingleSeries extends Component {
 
                                     )}
                             </section>
-
-                            <section className="my-6">
+                          </div>
+                            <section className="my-6 mr-16">
                                 <h2 className="text-2xl mb-4">Events</h2>
                                 <ul>
                                     {this.state.events.map(event => (
@@ -115,7 +124,7 @@ class SingleSeries extends Component {
                                 </ul>
                             </section>
 
-                            <button className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200">Create Event</button>
+                            <button className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200 mr-16">Create Event</button>
                         </div>
                     </div>
                 </section>
