@@ -8,9 +8,6 @@ from .views import (
     SeriesRetrieveUpdateDestroyView,
     EventListCreateView,
     EventRetrieveUpdateDestroyView,
-    
-
-
 )
 
 class SeriesListCreateViewTest(TestCase):
@@ -192,5 +189,3 @@ class EventRetrieveUpdateDestroyViewTest(TestCase):
         data = view(request, pk=event.id).data
 
         self.assertEqual(data, None)
-
-class 
