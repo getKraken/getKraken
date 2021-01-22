@@ -3,12 +3,6 @@ import { getSeriesData } from '../../services/data-fetcher'
 import { withRouter } from 'next/router'
 
 
-// const SingleSeriesWithRouter = (props) => {
-//     const router = useRouter()
-//     return <SingleSeries {...props} router={router} />
-//   }
-
-
 class SingleSeries extends Component {
 
     constructor(props) {
@@ -40,7 +34,7 @@ class SingleSeries extends Component {
             <h1>Series {this.state.series.title}</h1>
             <ul>
                 {this.state.series.participants.map(participant => (
-                    <li>{participant.username}</li>
+                    <li key={participant.id}>{participant.username}</li>
                 ))}
             </ul>
             </>
