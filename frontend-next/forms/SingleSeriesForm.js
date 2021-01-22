@@ -4,50 +4,151 @@ class SingleSeriesForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        eventList : [],
-        participantList : [],
+      claimedEventsList: [],
+      participantList: [],
+      unclaimedEventsList: [],
+      organizer: '',
+      userID: 0,
+      serieID: 0
+      // i will use the self API to get to my username
     }
   }
-  componentDidMount(){
-    // GET the API for the Events List
-    this.setState({
-      eventList : [
-        {
-            "id": 4,
-            "series": 3,
-            "description": "event1",
-            "host": null
-        },
-        {
-            "id": 5,
-            "series": 3,
-            "description": "event2",
-            "host": null
+  componentDidMount() {
+    let newClaimedEventsList = [];
+    let newUnclaimedEventsList = [];
+    // GET API fot the User name
+    fetch('http://get-kraken.herokuapp.com/api/v1/self')
+      .then(res => res.json())
+      .then(result => {
+        if (result.length != 0) {
+          this.setState({
+            userID: result[0].id
+          })
         }
-    ]
+      })
+
+
+    // GET the API for the Events List
+    fetch('http://get-kraken.herokuapp.com/api/v1/event')
+      .then(res => res.json())
+      .then(result => {
+        if (result.length != 0) {
+          result.forEach(event => {
+            // there might be a better way to do it but I do not know yet
+            this.setState({
+              serieID: event.series.id
+            })
+            if (event.host === this.state.userID) {
+              newClaimedEventsList.push(event.description)
+            }
+            if (event.host === null) {
+              newUnclaimedEvents.push(event.description)
+            }
+          })
+        }
+      })
+
+    this.setState({
+      claimedEventsList: newClaimedEventsList,
+      unclaimedEventsList: newUnclaimedEventsList
     })
 
-    // fetch(base + '/api/v1/event')
-    //   .then(res => res.json())
-    //     .then(result => this.setState({
-    //       eventList : result
-    //     }))
 
-    //Get data from the series list
+    if (this.state.seriesID != 0) {
+      //Get data from the series list of one series
+      fetch(`http://get-kraken.herokuapp.com/api/v1/series/${this.state.serieID}`)
+        .then(res => res.json())
+        .then(result => this.setState({
+          participantList: result.participants,
+          organizer: result.organizer.username
+
+        }))
+    }
   }
-  render(){
-    return(
+  render() {
+    return (
       <>
-        <ul>
-          {this.state.eventList.map(event => (
-            <li>
-              {event.description}
-            </li>
-          ))}  
-        </ul>
+        {this.state.unclaimedEventsList.length ?
+          <div className="unclaimedEventsList">
+            <ul>
+              {this.state.unclaimedEventsList.map(event => (
+                <li>
+                  {event}
+                </li>
+              ))}
+            </ul>
+          </div>
+          : <h1> create an event </h1>}
+
+        {this.state.claimedEventsList.length ?
+          <div className="claimedEventsList">
+            <ul>
+              {this.state.claimedEventsList.map(event => (
+                <li>
+                  {event}
+                </li>
+              ))}
+            </ul>
+          </div>
+          : ''}
+        {this.state.participantList.length ?
+          <div className="membersList">
+            <ul>
+              {this.state.participantList.map(participant => {
+                if (participant.username === this.state.organizer) {
+                  <li>
+                    {participant.username} (Organizer)
+                </li>
+                } else {
+                  <li>
+                    {participant.username}
+                  </li>
+                }
+              })}
+            </ul>
+          </div>
+          : ''}
       </>
     )
   }
 }
 
 export default SingleSeriesForm
+
+
+
+
+
+{/* <div className="unclaimedEventsList">
+          <ul>
+            {this.state.unclaimedEventsList.map(event => (
+              <li>
+                {event}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="claimedEventsList">
+          <ul>
+            {this.state.claimedEventsList.map(event => (
+              <li>
+                {event}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="membersList">
+          <ul>
+            {this.state.participantList.map(participant => {
+              if (participant.username === this.state.organizer) {
+                <li>
+                  {participant.username} (Organizer)
+                </li>
+              } else {
+                <li>
+                  {participant.username}
+                </li>
+              }
+            })}
+          </ul>
+        </div> */}

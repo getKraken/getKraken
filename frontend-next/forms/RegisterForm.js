@@ -4,11 +4,11 @@ import InputField from '../components/InputField';
 import SubmitButton from '../components/SubmitButton';
 // import '../styles/LonginForm';
 import Router from 'next/router';
-class LoginForm extends React.Component {
+class RegisterForm extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      username:'',
+      email:'',
       password:'',
       buttonDisabled: false,
       isAuthenticated: false
@@ -27,14 +27,14 @@ class LoginForm extends React.Component {
 
   resetForm(){
     this.setState({
-      username:'',
+      email:'',
       password:'',
       buttonDisabled:false
     })
   }
 
   async doSignUp(){
-    if(!this.state.username){
+    if(!this.state.email){
       return;
     }
     if(!this.state.password){
@@ -44,23 +44,29 @@ class LoginForm extends React.Component {
       buttonDisabled:true
     })
     try {
-      await fetch('https://get-kraken.herokuapp.com/accounts/login/',{
+      await fetch('http://get-kraken.herokuapp.com/api/v1/user/',{
         method:'POST',
         headers:{
           'Accept':'application/json',
           'Content-Type':'application/json'
         },
         body:JSON.stringify({
-          username:this.state.username,
+          email:this.state.email,
           password: this.state.password
         })
 
-      })
-        .then(data => {
-          localStorage.setItem('access', data.access);
-          localStorage.setItem('refresh', data.refresh);
-        })
-      Router.push('/all-series');
+      });
+      Router.push('/series-list');
+      // let result = await res.json();
+      // if(result && result.success){
+      //   this.setState({
+      //     isAuthenticated: true
+      //   });
+      // }
+      // else if (result && result.success === false){
+      //   this.resetForm();
+      //   alert(result.msg);
+      // }
     }
     catch(e){
       console.log(e);
@@ -74,10 +80,10 @@ class LoginForm extends React.Component {
       <div className="signUpPage">
         Log in 
         <InputField
-          type= 'text'
-          placeholder='username'
-          value={this.state.username ? this.state.username : ''}
-          onChange={(val)=> this.setInputValue('username',val)}
+          type= 'email'
+          placeholder='Email'
+          value={this.state.email ? this.state.email : ''}
+          onChange={(val)=> this.setInputValue('email',val)}
         />
         <InputField
           type= 'password'
@@ -97,4 +103,4 @@ class LoginForm extends React.Component {
 
 }
 
-export default LoginForm;
+export default RegisterForm;
