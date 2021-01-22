@@ -1,6 +1,5 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import LoginForm from '../forms/LoginForm'
+import LoginForm from '../forms/LoginAlt'
 
 export default function Home() {
   return (
