@@ -17,15 +17,15 @@ class SingleSeriesForm extends React.Component {
     let newClaimedEventsList = [];
     let newUnclaimedEventsList = [];
     // GET API fot the User name
-    fetch('http://get-kraken.herokuapp.com/api/v1/self')
-      .then(res => res.json())
-      .then(result => {
-        if (result.length != 0) {
-          this.setState({
-            userID: result[0].id
-          })
-        }
-      })
+    // fetch('http://get-kraken.herokuapp.com/api/v1/self')
+    //   .then(res => res.json())
+    //   .then(result => {
+    //     if (result.length != 0) {
+    //       this.setState({
+    //         userID: result[0].id
+    //       })
+    //     }
+    //   })
 
 
     // GET the API for the Events List
