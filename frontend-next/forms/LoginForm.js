@@ -44,7 +44,10 @@ class LoginForm extends React.Component {
       buttonDisabled:true
     })
     try {
-      await fetch('https://get-kraken.herokuapp.com/accounts/login/',{
+
+        const url = "https://get-kraken.herokuapp.com/api/v1/token/";
+
+      await fetch(url,{
         method:'POST',
         headers:{
           'Accept':'application/json',
@@ -57,10 +60,15 @@ class LoginForm extends React.Component {
 
       })
         .then(data => {
-          localStorage.setItem('access', data.access);
-          localStorage.setItem('refresh', data.refresh);
+        //   localStorage.setItem('access', data.access);
+        //   localStorage.setItem('refresh', data.refresh);
+            // Router.push('/all-series');
+
+            console.log('data', data);
+            console.log('access', data.access);
+            console.log('refresh', data.refresh);
+
         })
-      Router.push('/all-series');
     }
     catch(e){
       console.log(e);
@@ -68,11 +76,11 @@ class LoginForm extends React.Component {
     }
   }
 
-  
+
   render(){
     return(
       <div className="signUpPage">
-        Log in 
+        Log in
         <InputField
           type= 'text'
           placeholder='username'
