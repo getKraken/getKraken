@@ -6,8 +6,10 @@ class NewSeriesForm extends React.Component {
     return (
       <div className="newSeriesForm">
         <form>
-            <input>Series Title</input>
-            <input>Series Description</input>
+            <label for='series-title'>Series Title:</label>
+            <input type='text' id='series-title'></input>
+            <label for='series-description'>Series Description:</label>
+            <input type='text' id='series-description'></input>
             <SubmitButton>Create New Series</SubmitButton>
         </form>
       </div>

@@ -6,6 +6,8 @@ from .models import User, Series, Event
 from .serializers import UserSerializer, SeriesSerializer, EventSerializer
 from rest_framework.permissions import IsAdminUser
 from django.http.response import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 import random
 import copy
 import json
@@ -25,12 +27,15 @@ class UserMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class UserListCreateView(UserMixin, ListCreateAPIView):
   serializer_class = UserSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class UserRetrieveUpdateDestroyView(UserMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = UserSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GetSelfView(ListCreateAPIView):
   serializer_class = UserSerializer
 
@@ -55,9 +60,11 @@ class SeriesMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SeriesListCreateView(SeriesMixin, ListCreateAPIView):
   serializer_class = SeriesSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SeriesRetrieveUpdateDestroyView(SeriesMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = SeriesSerializer
 
@@ -80,9 +87,11 @@ class EventMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class EventListCreateView(EventMixin, ListCreateAPIView):
   serializer_class = EventSerializer
-  
+
+@method_decorator(csrf_exempt, name='dispatch')
 class EventRetrieveUpdateDestroyView(EventMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = EventSerializer
 
@@ -114,10 +123,6 @@ def GenerateDraftOrderView(request, pk):
         reverse_order += [current_order[reverse_index]]
       full_draft += [reverse_order]
 
-  # Jsondumps encode look up stringify store as text field
-  # https://www.w3schools.com/python/python_json.asp
-
-  # draft_order_as_json = 'pending write to json'
   draft_order_as_json = json.dumps({"draft_order": full_draft})
   series_of_interest.draft_order = draft_order_as_json
   # to parse the json in python, use:  y = json.loads(x)
@@ -126,10 +131,7 @@ def GenerateDraftOrderView(request, pk):
   series_of_interest.pick = 1
   series_of_interest.remainder = remainder
   series_of_interest.draft_generation_complete = True
-  # series_of_interest.total_rounds = max_rounds
-  # series_of_interest.total_picks = number_of_participants
   series_of_interest.save()
-
 
   '''
   POSSIBLE HELPFUL INFO AND SOURCES:
@@ -146,7 +148,7 @@ def GenerateDraftOrderView(request, pk):
   '''
 
 
-  message_to_return = "The draft order has been calculated.  There will be " + str(remainder) + " game(s) not included in the draft.  Visit the individual Series page to view the draft order... The draft order array of array: " + str(full_draft)
+  message_to_return = "The draft order has been calculated.  There will be " + str(remainder) + " game(s) not included in the draft.  Visit the individual Series page to view the draft order.  The draft_order array of arrays of integers is: " + str(full_draft)
   response = {"message": message_to_return, "status_code": 200}
   return JsonResponse(response)
 
@@ -156,26 +158,24 @@ def ClaimEventAsHostView(request, pk):
   # confirm the event is currently available
   event_of_interest = Event.objects.get(id=pk)
   if event_of_interest.host:
-    message_to_return = "This event already has a host or has already been claimed.  Please select a different event."
+    message_to_return = "This event has already been claimed by a host.  Please select a different event."
     response = {"message": message_to_return, "status_code": 200}
     return JsonResponse(response)
   
   # confirm it is the user's turn to claim an event
-  part_of_series_pk = event_of_interest.series
+  part_of_series_pk = event_of_interest.series.id
   series_of_interest = Series.objects.get(id=part_of_series_pk)
   y = json.loads(series_of_interest.draft_order)
-  draft_order_as_array = y.draft_order
+  draft_order_as_array = y["draft_order"]
+  user = get_user(request)
 
-  # how can we figure out which user requested this?
-  user = get_user()
-
-  if draft_order_as_array[series_of_interest.round][series_of_interest.pick] != user.id:
+  if draft_order_as_array[series_of_interest.round-1][series_of_interest.pick-1] != user.id:
     message_to_return = "It is not your turn to claim to host or attend an event.  Please be patient and wait your turn."
     response = {"message": message_to_return, "status_code": 200}
     return JsonResponse(response)
 
   # update the Event in the database to assign the current user as the Host of the Event
-  event_of_interest.host = user.id
+  event_of_interest.host = user
   event_of_interest.save()
 
   # increment the Pick counter by 1. If the Pick count is higher than the number of Participants, reset it to 1 and increment the Round count by 1
@@ -202,12 +202,11 @@ def ClaimEventAsHostView(request, pk):
     series_of_interest.draft_complete = True
     series_of_interest.save()
 
-    message_to_return = "This was the final pick of the draft.  Enjoy the events!"
+    message_to_return = "Congrats!  " + str(user.username) + " has successfully claimed " + str(event_of_interest.description) + ".  This was the final pick of the draft.  Remember, there were " + str(series_of_interest.remainder) + " event(s) that were not included in the draft.  Enjoy the events!"
     response = {"message": message_to_return, "status_code": 200}
     return JsonResponse(response)
 
-
-  # response for a typical pick
-  message_to_return = "Congrats!  " + str(user.username) + " has successfully claimed " + str(event_of_interest.description) + ".  It is now the next person's turn in the draft.  We are at Pick number " + str(series_of_interest.pick) + " of Round " + str(series_of_interest.round) + "."
+  # response for a mid-draft, successful pick
+  message_to_return = "Congrats!  " + str(user.username) + " has successfully claimed " + str(event_of_interest.description) + ".  It is now the next person's turn in the draft.  We are now ready for Pick number " + str(series_of_interest.pick) + " of Round " + str(series_of_interest.round) + "."
   response = {"message": message_to_return, "status_code": 200}
   return JsonResponse(response)

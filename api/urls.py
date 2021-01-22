@@ -23,7 +23,7 @@ urlpatterns = [
   path('series/<int:pk>/generate-draft-order/', GenerateDraftOrderView, name='generate_draft_order_for_single_series_api'),
 
   path('event/', EventListCreateView.as_view(), name='event_api'),
-  path('event/<int:pk>', EventRetrieveUpdateDestroyView.as_view(), name='single_event_api'),
+  path('event/<int:pk>/', EventRetrieveUpdateDestroyView.as_view(), name='single_event_api'),
   path('event/<int:pk>/host/', ClaimEventAsHostView, name='claim_event_as_host_api'),
 
   path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
