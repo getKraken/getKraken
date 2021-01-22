@@ -6,6 +6,8 @@ from .models import User, Series, Event
 from .serializers import UserSerializer, SeriesSerializer, EventSerializer
 from rest_framework.permissions import IsAdminUser
 from django.http.response import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 import random
 import copy
 import json
@@ -25,12 +27,15 @@ class UserMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class UserListCreateView(UserMixin, ListCreateAPIView):
   serializer_class = UserSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class UserRetrieveUpdateDestroyView(UserMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = UserSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GetSelfView(ListCreateAPIView):
   serializer_class = UserSerializer
 
@@ -55,9 +60,11 @@ class SeriesMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SeriesListCreateView(SeriesMixin, ListCreateAPIView):
   serializer_class = SeriesSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SeriesRetrieveUpdateDestroyView(SeriesMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = SeriesSerializer
 
@@ -80,9 +87,11 @@ class EventMixin:
     # not admin or logged in, you get nothing
     return None
 
+@method_decorator(csrf_exempt, name='dispatch')
 class EventListCreateView(EventMixin, ListCreateAPIView):
   serializer_class = EventSerializer
-  
+
+@method_decorator(csrf_exempt, name='dispatch')
 class EventRetrieveUpdateDestroyView(EventMixin, RetrieveUpdateDestroyAPIView):
   serializer_class = EventSerializer
 
@@ -114,10 +123,6 @@ def GenerateDraftOrderView(request, pk):
         reverse_order += [current_order[reverse_index]]
       full_draft += [reverse_order]
 
-  # Jsondumps encode look up stringify store as text field
-  # https://www.w3schools.com/python/python_json.asp
-
-  # draft_order_as_json = 'pending write to json'
   draft_order_as_json = json.dumps({"draft_order": full_draft})
   series_of_interest.draft_order = draft_order_as_json
   # to parse the json in python, use:  y = json.loads(x)
@@ -126,11 +131,24 @@ def GenerateDraftOrderView(request, pk):
   series_of_interest.pick = 1
   series_of_interest.remainder = remainder
   series_of_interest.draft_generation_complete = True
-  # series_of_interest.total_rounds = max_rounds
-  # series_of_interest.total_picks = number_of_participants
   series_of_interest.save()
 
-  message_to_return = "The draft order has been calculated.  There will be " + str(remainder) + " event(s) not included in the draft.  Visit the individual Series page to view the draft order... The draft order array of array: " + str(full_draft)
+  '''
+  POSSIBLE HELPFUL INFO AND SOURCES:
+  django docs about views:  https://docs.djangoproject.com/en/3.1/topics/http/views/
+  Helpful terms and hints:
+    - object relational mapper (ORM)  --so that we don't have to write SQL
+    - Object Manager:  <ourObject>.objects
+
+  example pseudo code:
+  # target_series = Series.objects.all().filter(title="Season 2021")
+  # request.params.pk = pk ?
+  # target_series.round += 1
+  # target_series.save()
+  '''
+
+
+  message_to_return = "The draft order has been calculated.  There will be " + str(remainder) + " game(s) not included in the draft.  Visit the individual Series page to view the draft order.  The draft_order array of arrays of integers is: " + str(full_draft)
   response = {"message": message_to_return, "status_code": 200}
   return JsonResponse(response)
 
