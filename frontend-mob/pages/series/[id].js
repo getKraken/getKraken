@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { getSeriesData, getEventData } from '../../services/data-fetcher'
+import { getSeriesData, getEventData, getGenerateData } from '../../services/data-fetcher'
 import { withRouter } from 'next/router'
-
+import SubmitButton from '../../components/SubmitButton';
 
 class SingleSeries extends Component {
 
@@ -10,42 +10,39 @@ class SingleSeries extends Component {
         // console.log('query', props.router.query);
 
         this.state = {
-            id: 9, //props.router.query.id,
+            id: 8, //props.router.query.id,
             series: {
                 title: '...',
                 participants: [],
             },
             events: [],
+            generator: []
         }
+        this.generateDraft = this.generateDraft.bind(this)
     }
+    async generateDraft() {
+        // alert('generate draf');
 
+        const generate = await getGenerateData(this.state.id);
+        console.log('generate', generate); 
+        const series = {...this.state.series}
+        series.draft_order = JSON.stringify({draft_order: generate.message});
+        console.log(series.draft_order);
+        this.setState({series});
+
+
+    }
     async componentDidMount() {
-
-        // const { id } = 9; //this.props.router.query;
-
-        const id = 9;
-
-        // console.log('id',id);
-
+        // weird, but this will handle page refresh
+        const id = this.props.router.query && this.props.router.query.id || this.state.id;
         const series = await getSeriesData(id);
-
-        console.log('series', series);
-
         const allEvents = await getEventData();
-
-        // console.log('allEvents', allEvents);
-
         const events = allEvents.filter(event => {
             return event.series.id === id;
         });
-
-        console.log('events', events);
-
         this.setState({ series, events });
-
-
-
     }
+
 
     render() {
         return (
@@ -80,7 +77,8 @@ class SingleSeries extends Component {
                                 ) : (
                                         <div className="my-4">
                                             <h3 className="my-4 text-sm italic">{this.state.series.draft_order}</h3>
-                                            <button className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200">Generate Draft</button>
+                                            <button className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200">Create Event</button>
+
                                         </div>
 
                                     )}
@@ -95,7 +93,10 @@ class SingleSeries extends Component {
                                 </ul>
                             </section>
 
-                            <button className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200">Create Event</button>
+                            <SubmitButton className="bg-blue-400 px-4 py-2 rounded hover:bg-blue-200"
+                                text='Generate Draft'
+                                onClick={this.generateDraft}
+                            />
                         </div>
                     </div>
                 </section>

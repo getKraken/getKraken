@@ -50,12 +50,28 @@ export async function getEventData(id=null) {
     return await getResourceData('event', id);
 }
 
+export async function getGenerateData(id){
+    const JWTToken = await fetchAccessToken();
+    if(id != null){
+        const url = `https://get-kraken.herokuapp.com/api/v1/series/${id}/generate-draft-order/`;
 
+        console.log('resource url', url);
+        let config = { headers: { "Authorization": `Bearer ${JWTToken}` } };
+        try{
+            let response = await axios.get(url, config);
+            return response.data;
+        }catch(e){
+            console.error(e);
+        }
+    }
+    
+
+}
 async function getResourceData(noun, id=null) {
 
     const JWTToken = await fetchAccessToken();
 
-    let url = `http://get-kraken.herokuapp.com/api/v1/${noun}/`;
+    let url = `https://get-kraken.herokuapp.com/api/v1/${noun}/`;
 
     if(id != null) {
         url += `${id}/`;
